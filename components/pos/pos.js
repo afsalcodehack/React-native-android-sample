@@ -20,29 +20,69 @@ var {
   TouchableWithoutFeedback,
   ListView,
 } = React;
-
+var total = 0;
 var dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 class PointOfSale extends React.Component{
     constructor(args) {
         super(args);
         this.state = {
-            dataSource: dataSource.cloneWithRows(posData)
+            dataSource: dataSource.cloneWithRows(posData),
+            total : total
+
         }
     }
-    onItemPress() {
+
+   getTotal() {
+     var _total=0;
+     if(posData.length > 0) {
+       for (var i = 0; i <= posData.length; i++) {
+          _total = total + (posData[i].price * posData[i].qty);
+       }
+     }
+        this.setState({total:_total})
+   }
+
+   getFilter(item){
+     return function(_store){
+       return _store.catId == item.id;
+     }
+   }
+
+   onItemFilter(item){
+     var result =  _itemStore.filter(this.getFilter(item));
+     this.setState({ dataSource: dataSource.cloneWithRows(_itemStore)})
+   }
+
+    onItemPress(rowData) {
+      //var newdata = update(posData,{$push:{ name: 'Test', icon: 'list'}});
+        var flag=false;
+      if(posData.length > 0){
+        for(var i = 0; i <= posData.length-1;i++){
+          if(posData[i].id==rowData.id){
+            flag=true;
+            posData[i].qty = posData[i].qty +  1;
+            this.getTotal();
+            this.setState({ dataSource: dataSource.cloneWithRows(posData)})
+            break;
+          }
+        }
+      }
+
+        if(flag==false){
+          this.getTotal();
+          posData.splice(0,0,{id:rowData.id, name:rowData.itemName, qty:1 , price : rowData.price });
+          this.setState({ dataSource: dataSource.cloneWithRows(posData)})
+
+        }
 
 
-      
 
-
-      posData.push({ name: 'Test', icon: 'list' });
-      this.setState({ dataSource: dataSource.cloneWithRows(posData)})
     }
   render() {
     return (
       <View style={styles.container}>
           <View style={styles.categoryBar}>
-             <Category />
+             <Category onItemFilter={this.onItemFilter.bind(this)}/>
           </View>
           <View style={{ width: 450, backgroundColor: 'whitesmoke', alignItems:'stretch', flexDirection: 'column', borderRightColor:'#766946', borderRightWidth: 5}}>
               <View style={{ backgroundColor: '#FFF', height: 50, padding: 10 }}>
@@ -52,7 +92,7 @@ class PointOfSale extends React.Component{
                   <TextInput placeholder="Search Something Here..." />
               </View>
               <View style={{alignItems: 'center', flex: 1}}>
-                  <Dishes onItemPress={this.onItemPress.bind(this)} />
+                  <Dishes source={this.state.dataSource} onItemPress={this.onItemPress.bind(this)} />
               </View>
           </View>
 
@@ -76,7 +116,7 @@ class PointOfSale extends React.Component{
                               <Text> Sub Total: </Text>
                           </View>
                           <View style={{flex: 1, alignItems: 'flex-start'}}>
-                              <Text> $7.25</Text>
+                              <Text>{total}</Text>
                           </View>
                           <View style={{flex: 1, alignItems: 'flex-start'}}>
                               <Text>Total</Text>
@@ -110,7 +150,7 @@ class PointOfSale extends React.Component{
                               <Text>Balance Due</Text>
                           </View>
                           <View style={{flex: 1, alignItems: 'flex-end'}}>
-                              <Text style={{color: '#A51919', fontSize: 20}}> $8.59</Text>
+                              <Text style={{color: '#A51919', fontSize: 20}}>{this.state.total}</Text>
                           </View>
                       </View>
                   </View>
@@ -136,16 +176,16 @@ class PointOfSale extends React.Component{
 
               </View>
               <View style={{flexDirection: 'row', flex: 1}}>
-                  <View style={{width: 80, height: 80, borderRadius: 8, backgroundColor: '#0085BE', margin: 10, marginTop: 25, padding: 28, paddingLeft: 25}}>
-                      <Text style={{color: '#FFF'}}>
+                  <View style={{width: 100, height: 80, borderRadius: 8, backgroundColor: '#0085BE', margin: 10, marginTop: 25, padding: 28, paddingLeft: 25}}>
+                      <Text style={{color: '#FFF',fontSize:18}}>
                          Print
                       </Text>
                   </View>
                   <View style={{flex:1}}></View>
 
-                  <View style={{width: 80, height: 80, borderRadius: 8, backgroundColor: '#0085BE', margin: 10, marginTop: 25, padding: 28, paddingLeft: 30}}>
-                      <Text style={{color: '#FFF'}}>
-                         Pay
+                  <View style={{width: 100, height: 80, borderRadius: 8, backgroundColor: '#0085BE', margin: 10, marginTop: 25, padding: 28, paddingLeft: 30}}>
+                      <Text style={{color: '#FFF',fontSize:18}}>
+                         Paid
                       </Text>
                   </View>
               </View>
@@ -157,9 +197,9 @@ class PointOfSale extends React.Component{
       return (
           <View style={{borderBottomStyle: 'dashed', borderBottomWidth: 1, borderBottomColor: "#D6D6D6",padding: 8, flexDirection: 'row'}}>
               <Text style={{ flex: 2}}>{rowData.name}</Text>
-              <Text style={{ flex: 0.5}}>{rowID + 1}</Text>
-              <Text style={{ flex: 0.5}}>{rowID + 1 * 25.25}</Text>
-              <Text style={{ flex: 0.5}}>{ rowID + 1 * 26.2563 }</Text>
+              <Text style={{ flex: 0.5}}>{rowData.qty}</Text>
+              <Text style={{ flex: 0.5}}>{rowData.price}</Text>
+              <Text style={{ flex: 0.5}}>{ rowData.qty * rowData.price }</Text>
           </View>
      );
   }
@@ -177,14 +217,15 @@ var data =[
     { name: 'Seven', icon: 'file-text'}
 ]
 
-var _data = [
-    { Category: [1, 2, 3]},
-    { Category: [1, 2, 3]},
-    { Category: [1, 2, 3]},
-    { Category: [1, 2, 3]},
-    { Category: [1, 2, 3]},
-    { Category: [1, 2, 3]},
+var imageUrl = 'http://img.8-ball.net/2015/09/01/restaurant-full-of-food-plates-l-3de1f91c04bf4687.png';
+var _itemStore=[{ Category: [{id:1,catId:1,itemName:'Biriyani',price:'123',image:imageUrl}, {id:2,catId:2,itemName:'Pizza',price:'55',image:imageUrl}, {id:3,catId:5,itemName:'Ghee Rice',price:'78',image:imageUrl}]},
+{ Category: [{id:4,catId:2,itemName:'Rice',price:'321',image:imageUrl}, {id:4,catId:1,itemName:'Chicken Fry',price:'66',image:imageUrl}, {id:6,catId:3,itemName:'Grilled',price:'76',image:imageUrl}]},
+{ Category: [{id:7,catId:1,itemName:'Chicken curry',price:'122',image:imageUrl}, {id:8,catId:4,itemName:'Mutton Fry',price:'43',image:imageUrl}, {id:9,catId:5,itemName:'Beef Fry',price:'56',image:imageUrl}]},
+{ Category: [{id:10,catId:2,itemName:'Mutton curry',price:'112',image:imageUrl}, {id:11,catId:3,itemName:'Fish Curry',price:'23',image:imageUrl}, {id:12,catId:2,itemName:'Chilly Chicken',price:'45',image:imageUrl}]},
+{ Category: [{id:12,catId:3,itemName:'Tea',price:'32',image:imageUrl}, {id:14,catId:4,itemName:'Fish Fry',price:'67',image:imageUrl}, {id:15,catId:2,itemName:'Mutton Biriyani',price:'23',image:imageUrl}]},
+{ Category: [{id:16,catId:1,itemName:'Beef',price:'11',image:imageUrl}, {id:17,catId:2,itemName:'Prawns',price:'87',image:imageUrl}, {id:18,catId:1,itemName:'Biriyani',price:'12',image:imageUrl}]},
 ];
+var _data = [];
 class Dishes extends React.Component {
     constructor(args) {
         super(args);
@@ -195,7 +236,7 @@ class Dishes extends React.Component {
         }
     }
     render() {
-        return (<ListView dataSource={this.state.dataSource} renderRow={this.renderRow.bind(this)} style={{flex: 1}} />)
+        return (<ListView dataSource={this.props.source} renderRow={this.renderRow.bind(this)} style={{flex: 1}} />)
     }
     renderRow(rowData, sectionID: number, rowID: number) {
         return (
@@ -203,10 +244,15 @@ class Dishes extends React.Component {
                 {
                     (()=>{
                         var items = [];
-                        rowData.Category.map(() => {
+                        rowData.Category.map((rowData) => {
                             items.push(
-                              <TouchableHighlight onPress={this.props.onItemPress}>
-                                <View style={{ width: 120, height: 120, backgroundColor: '#FFF', margin: 8}} />
+                              <TouchableHighlight onPress={()=>this.props.onItemPress(rowData)} underlayColor="white">
+                                <View style={{ }}>
+                                <Image source={{uri: rowData.image}} style={{alignItems:'flex-end', width: 120, height: 120,margin: 8,borderWidth:3,borderColor:'#ccc'}}>
+                                    <Text style={{height:25,width:70,backgroundColor:'#ccc',textAlign:'center',fontSize:18}}>Rs/-{rowData.price}</Text>
+                                    <Text style={{height:25, width:120,backgroundColor:'#fff',textAlign:'center',marginTop:70,fontSize:18}} >{rowData.itemName}</Text>
+                                </Image>
+                              </View>
                               </TouchableHighlight>
                             );
                         });
