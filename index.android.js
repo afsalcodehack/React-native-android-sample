@@ -9,7 +9,7 @@ import React from 'react-native';
 import { Titlebar } from './components/common/titlebar';
 import { Infobar } from './components/common/infobar';
 import { Dashboard } from './components/dashboard/dashboard';
-
+import PointOfSale from './app/components/pointofsale/pointOfSale';
 
 var {
   AppRegistry,
@@ -22,7 +22,7 @@ var {
 } = React;
 
 let _navigator  =  null;
-let _initialRoute = { title: 'Dashboard', id: 'dashboard', component: Dashboard };
+let _initialRoute = { title: 'Dashboard', id: 'dashboard', component: PointOfSale };
 
 BackAndroid.addEventListener('hardwareBackPress', () => {
   if (_navigator.getCurrentRoutes().length === 1  ) {
@@ -35,15 +35,7 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
 var Watermelon = React.createClass({
 
   getInitialState: function(){
-    return {
-      currentState: 1,
-      roomNo: 1
-    };
-  },
-
-  titleClick:function () {
-    var id = this.state.currentState == 1 ? 0 : 1;
-    this.setState({ currentState: id});
+    return { };
   },
 
   configureScene: function (route) {
@@ -53,7 +45,7 @@ var Watermelon = React.createClass({
   renderScene: function (route, navigator) {
       let Component = null;
       _navigator = navigator;
-     
+
       if(route.component) {
         Component = route.component;
       }
@@ -103,3 +95,4 @@ var styles = StyleSheet.create({
 });
 
 AppRegistry.registerComponent('Watermelon', () => Watermelon);
+0

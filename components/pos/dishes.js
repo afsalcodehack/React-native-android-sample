@@ -35,7 +35,7 @@ class Dishes extends React.Component {
         var dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
         this.state = {
-            dataSource: dataSource.cloneWithRows(_data)
+            dataSource: dataSource.cloneWithRows(this.props.data)
         }
     }
     render() {
@@ -61,24 +61,24 @@ class Dishes extends React.Component {
 }
 
 let styles = StyleSheet.create({
-  container: { 
-    width: 450, 
-    backgroundColor: 'whitesmoke', 
-    alignItems:'stretch', 
-    flexDirection: 'column', 
-    borderRightColor:'#766946', 
+  container: {
+    width: 450,
+    backgroundColor: 'whitesmoke',
+    alignItems:'stretch',
+    flexDirection: 'column',
+    borderRightColor:'#766946',
     borderRightWidth: 5
   },
   title: {
-    backgroundColor: '#FFF', 
-    height: 50, 
-    padding: 10 
+    backgroundColor: '#FFF',
+    height: 50,
+    padding: 10
   },
   titleTextWrapper: {
-    backgroundColor: '#FFF', 
-    padding: 5, 
+    backgroundColor: '#FFF',
+    padding: 5,
     borderTopColor: '#F4F4F4',
-    borderTopWidth: 1 
+    borderTopWidth: 1
   }
 });
 
