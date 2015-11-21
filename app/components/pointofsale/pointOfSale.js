@@ -5,25 +5,26 @@ import Sidebar from '../common/sidebar';
 import PosItemList from './posItemList';
 import Invoice from './invoice';
 
-var { View, Text, Component, StyleSheet, } = React;
-
+var { View, Text, Component, StyleSheet, ListView, } = React;
+var data = [];
 class PointOfSale extends React.Component {
   constructor(args) {
     super(args);
+    this.dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      data: [1,2,3]
+      dataSource: this.dataSource.cloneWithRows(data)
     };
+  }
+  onPress(dish) {
+    data.push(dish);
+    this.setState({ dataSource :' New Value ', dataSource: this.dataSource.cloneWithRows(data)});
   }
   render() {
     return (
       <View style={styles.container}>
         <Sidebar />
-        <PosItemList onPress={()=>{
-          var a = this.state.data;
-          a.push(5)
-          this.setState({data:a} )
-        }} />
-        <Invoice data={this.state.data} />
+        <PosItemList onPress={this.onPress.bind(this)} />
+        <Invoice dataSource={this.state.dataSource} />
       </View>
     );
   }

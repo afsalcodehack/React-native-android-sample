@@ -11,28 +11,25 @@ var listWidth = width - 330;
 var rowItemCount = Math.round(listWidth / 110) - 1;
 
 var _data = [
-];
-
-var uri = [
-  "http://www.cookingsgood.com/wp-content/uploads/2012/11/cherry-pastry1.jpg",
-  "https://delicesandgourmandises.files.wordpress.com/2014/08/delicesgourmandises-sweets-dessert-pastry.jpg",
-  "http://www.ecpi.edu/sites/default/files/baking-pastry.jpg",
-  "http://www.awesomeconcierge.com/wp-content/uploads/2015/01/235.jpg",
-  "http://hotcurrysauce.com/blog/wp-content/uploads/2013/10/START_Curry_Sauce_Thai_Red_Curry_recipe.jpg",
-  "http://images.tastespotting.com/thumbnails/287495.jpg",
-  "http://www.pinoyrecipe.net/wp-content/uploads/2008/10/thai-red-curry.jpg",
-  "http://www.sunorchard.com/wp-content/themes/sun-orchard/img/products_intro_img.jpg",
-  "http://yonanas.com/wp-content/uploads/2012/11/juice.jpg",
-  "http://www.nubiarestaurant.com/wp-content/uploads/2015/09/burger_sandwich_1.jpg"
+  { name: 'Crispy Turkey Salad', price:'40.00', image: 'http://cdn-image.myrecipes.com/sites/default/files/styles/300x300/public/image/recipes/ck/03/11/turkey-salad-ck-550006-x.jpg?itok=gUCWjrEB'},
+  { name: 'Dulse Cucumber Salad', price: '45.00', image: 'http://www.andreabeaman.com/health/wp-content/uploads/2014/08/P10300422.jpg'},
+  { name: 'Garlic Shrimp Salad', price: '25.00', image: 'http://www.campbellskitchen.com/recipeimages/margarita-shrimp-salad-large-50994.jpg'},
+  { name: 'Golden Squash Soup', price: '50.00', image: 'http://www.livingfresh.org/wp-content/uploads/2014/10/Fotolia_71074246_Subscription_Monthly_M.jpg'},
+  { name: 'Spice Salmon', price: '35.00', image: 'http://sweetlifebake.com/wp-content/uploads/2011/09/spicy-salmon-018-1024x685.jpg'},
+  { name: 'Boiled Large Shrimp', price: '14.00', image: 'http://4.bp.blogspot.com/-TklSQMvBXSw/VQwwFCNyPxI/AAAAAAAAM-Q/eIe48oCalVw/s1600/boiled%2Bshrimp.jpg'},
+  { name: 'Braised Cod with Celery', price: '36.00', image: 'https://migrainemeals.files.wordpress.com/2008/07/braised_cod.jpg'},
+  { name: 'Pasta with Clams', price: '24.00', image: 'http://www.gianni.tv/wp-content/uploads/2013/05/Spaghetti-with-Clams.jpg'},
+  { name: 'Broiled Chicken Salad', price: '11.00', image: 'http://www.pitajungle.com/data/menu_items/1/6/8/large.jpg'},
+  { name: 'Sautéed Chicken & Asparagus', price: '10.00', image: 'http://www.gimmesomeoven.com/wp-content/uploads/2013/04/Chicken-and-Asparagus-Stir-Fry-4.jpg'},
+  { name: 'Spice Chicken in a Bowl', price: '25.00', image: 'http://drreedward.com/wp-content/uploads/2014/09/broiledChickenMustard.jpg'},
+  { name: 'Chicken Chettinad', price: '45.00', image: 'http://i.ndtvimg.com/i/2015-01/chicken-chettinad_625x350_51421732749.jpg'},
+  { name: 'Chicken Chilly', price: '145.00', image: 'http://4.bp.blogspot.com/-27dLDyFMDLE/TeNHKJDpnCI/AAAAAAAAAME/xX9SAKl06d4/s1600/Chilli-chicken.gif'},
+  { name: 'Chicken Thandoori', price: '15.00', image: 'http://aramkitchen.com/wp-content/uploads/2013/09/legfinal1-piece-short.jpg'}
 ];
 
 class PosItemList extends React.Component {
   constructor(args) {
     super(args);
-
-    for(var i = 0; i < 25; i++ ){
-      _data.push({});
-    }
 
     var strucutredData = [];
     var selectedDataNode = [];
@@ -83,25 +80,25 @@ class PosItemList extends React.Component {
                   <View style={{flexDirection:'row', alignItems:'center'}}>
                     {(() => {
                       item.map((dish) => {
-                        let sourceIndex = Math.floor(Math.random() * uri.length - 1 ) + 1;
-                        let source = uri[sourceIndex]
+                      //  let sourceIndex = Math.floor(Math.random() * uri.length - 1 ) + 1;
+                        //let source = uri[sourceIndex]
                         dishes.push(
-                          <TouchableWithoutFeedback onPress={this.props.onPress}>
-                          <Image source={{uri:source}} style={{width:110, height: 110, margin: 5, backgroundColor: '#FFF', flexDirection: 'column'}}>
-                            <View style={{flexDirection:'row'}}>
-                              <View style={{flex: 1}}>
+                          <TouchableWithoutFeedback onPress={()=>{this.props.onPress(dish)}}>
+                            <Image source={{uri:dish.image}} style={{width:110, height: 110, margin: 5, backgroundColor: '#FFF', flexDirection: 'column'}}>
+                              <View style={{flexDirection:'row'}}>
+                                <View style={{flex: 1}}>
+                                </View>
+                                <View style={{backgroundColor: 'red', padding: 5}}>
+                                  <Text style={{background: 'yellow',color: '#FFF'}}>{dish.price}</Text>
+                                </View>
                               </View>
-                              <View style={{backgroundColor: 'red', padding: 5}}>
-                                <Text style={{background: 'yellow',color: '#FFF'}}>{Math.floor(sourceIndex * 12.56)}</Text>
+                              <View style={{flex: 1}}></View>
+                              <View style={{padding: 5, backgroundColor: '#FFF'}}>
+                                <Text>{dish.name}</Text>
                               </View>
-                            </View>
-                            <View style={{flex: 1}}></View>
-                            <View style={{padding: 5, backgroundColor: '#FFF'}}>
-                              <Text> Chicken Chilly</Text>
-                            </View>
-                          </Image>
+                            </Image>
                           </TouchableWithoutFeedback>
-                        ) ;
+                        );
                       });
                       return dishes;
                     })()}
