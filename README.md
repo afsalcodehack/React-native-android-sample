@@ -1,1 +1,1 @@
-# React native android sample application and desing samples
+# React native android sample application and design samples
